@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematica</title>
+    <link rel="stylesheet" href="/static/homePage.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <form action="/">
+            <div class="logo">
+                <button>HERE CINEMA</button>
+            </div>
+        </form>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="/movies">Movies</a></li>
+                <li th:if="${!isLoggedIn}"><a href="/login">Login</a></li>
+                <li th:if="${isLoggedIn}"><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h2 class="animate__animated animate__fadeInDown">Discover Cinematica</h2>
+            <p class="animate__animated animate__fadeInUp">Your ultimate destination for movies</p>
+            <a href="/movies" class="btn animate__animated animate__zoomIn">Explore Now</a>
+        </div>
+    </div>
+</section>
+
+<section class="featured-movies">
+    <div class="container">
+        <h2 class="animate__animated animate__fadeInUp">Featured Movies</h2>
+        <div class="movies-grid animate__animated animate__fadeInUp">
+            <div class="movie-card animate__animated animate__zoomIn">
+                <img src="../static/img/akvamen-2.jpg" alt="Akvamen 2">
+                <h3>Akvamen 2</h3>
+            </div>
+            <div class="movie-card animate__animated animate__zoomIn">
+                <img src="../static/img/choqintirgan-ota.jpg" alt="Choqintirgan Ota">
+                <h3>Choqintirgan Ota</h3>
+            </div>
+            <div class="movie-card animate__animated animate__zoomIn">
+                <img src="../static/img/deadpool-3.png" alt="Deadpool 3">
+                <h3>Deadpool 3</h3>
+            </div>
+            <div class="movie-card animate__animated animate__zoomIn">
+                <img src="../static/img/titanik.jpg" alt="Titanik">
+                <h3>Titanik</h3>
+            </div>
+            <div class="movie-card animate__animated animate__zoomIn">
+                <img src="../static/img/x-men.jpg" alt="X-Men">
+                <h3>X-Men</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2024 Cinematica. All rights reserved.</p>
+    </div>
+</footer>
+<script>
+    document.addEventListener('scroll', function() {
+        const header = document.querySelector('.header');
+        header.classList.toggle('sticky', window.scrollY > 0);
+    });
+</script>
+</body>
+</html>
