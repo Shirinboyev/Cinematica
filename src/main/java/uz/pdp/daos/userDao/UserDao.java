@@ -4,13 +4,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import uz.pdp.daos.BaseDao;
-import uz.pdp.enums.userState.UserState;
 import uz.pdp.model.AuthUser;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserDao implements BaseDao<AuthUser> {
@@ -29,13 +29,13 @@ public class UserDao implements BaseDao<AuthUser> {
         String username = rs.getString("username");
         String email = rs.getString("email");
         String password = rs.getString("password");
-        String role = rs.getString(UserState.USER.ordinal());
+        String role = rs.getString("role");
 
         LocalDateTime createdAt = null;
         try {
             createdAt = rs.getTimestamp("created_at").toLocalDateTime();
         } catch (SQLException e) {
-
+            // Handle exception or leave empty if not crucial
         }
 
         return AuthUser.builder()
@@ -68,8 +68,10 @@ public class UserDao implements BaseDao<AuthUser> {
     @Override
     public AuthUser getById(int id) {
         String query = "SELECT * FROM users WHERE id=?;";
-        List<AuthUser> users = jdbcTemplate.query(query, rowMapper, id);
-        return users.isEmpty() ? null : users.getFirst();
+        return jdbcTemplate.query(query, rowMapper, id)
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
@@ -78,9 +80,17 @@ public class UserDao implements BaseDao<AuthUser> {
         return jdbcTemplate.query(query, rowMapper);
     }
 
-    public AuthUser getByUsername(String username) {
-        String query = "SELECT * FROM users WHERE username=?;";
-        List<AuthUser> users = jdbcTemplate.query(query, rowMapper, username);
-        return users.isEmpty() ? null : users.getFirst();
+    public Optional<AuthUser> getByUsername(String username) {
+        String query = "SELECT * FROM users WHERE username = ? LIMIT 1;";
+        try {
+            AuthUser user = jdbcTemplate.queryForObject(query, new Object[]{username}, rowMapper);
+            return Optional.ofNullable(user);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+    public List<AuthUser> findByRole(String role) {
+        String sql = "SELECT * FROM users WHERE role = ?";
+        return jdbcTemplate.query(sql, rowMapper, role);
     }
 }

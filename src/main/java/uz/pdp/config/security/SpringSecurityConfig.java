@@ -1,53 +1,60 @@
 package uz.pdp.config.security;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import uz.pdp.handler.LoginFailureHandler;
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/static/**", "/login", "/signup").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/static/**", "/login", "/signup", "/").permitAll()
                         .anyRequest().authenticated()
-                );
-        http.formLogin(formLogin -> formLogin
+                )
+                .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/", true)
-                        .failureUrl("/login")
-                );
-        http.logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .failureHandler(customFailureHandler())
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/perform-logout")
                         .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .permitAll()
+                )
+                .rememberMe(remMep->remMep
+                        .alwaysRemember(true)
+                        .rememberMeCookieName("r-me")
+                        .key("SECRET_KEY2007120267073634GSH")
+                        .userDetailsService(userDetailsService)
+                        .tokenValiditySeconds(24*60*60*7)
                 );
-
         return http.build();
     }
+
     @Bean
-    public UserDetailsService userDetailsService() throws Exception {
-        UserDetails details = User.withUsername("jl")
-                .password("{noop}12")
-                .roles("USER")
-                .build();
-        UserDetails admin = User.withUsername("1")
-                .password("{noop}1")
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(details,admin);
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationFailureHandler customFailureHandler() {
+        return new LoginFailureHandler();
+    }
 }

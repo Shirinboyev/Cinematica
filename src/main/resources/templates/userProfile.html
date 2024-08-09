@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .container h1 {
+            margin-bottom: 20px;
+        }
+        .container p {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>User Profile</h1>
+    <p><strong>Name:</strong> <span th:text="${userProfile.fullName}">Admin Name</span></p>
+    <p><strong>Username:</strong> <span th:text="${userProfile.username}">admin</span></p>
+    <p><strong>Email:</strong> <span th:text="${userProfile.email}">admin@example.com</span></p>
+    <p><strong>Role:</strong> <span th:text="${userProfile.role}">Administrator</span></p>
+</div>
+</body>
+</html>

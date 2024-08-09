@@ -6,6 +6,7 @@ import uz.pdp.model.AuthUser;
 import uz.pdp.service.BaseService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserService implements BaseService<AuthUser> {
@@ -40,7 +41,8 @@ public class UserService implements BaseService<AuthUser> {
         return userDao.getAll();
     }
 
-    public AuthUser getByUsername(String username) {
+    public Optional<AuthUser> getByUsername(String username) {
         return userDao.getByUsername(username);
     }
+
 }

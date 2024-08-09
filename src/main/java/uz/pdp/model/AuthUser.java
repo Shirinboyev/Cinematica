@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uz.pdp.enums.userState.UserState;
 
 import java.time.LocalDateTime;
 
@@ -12,11 +13,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class AuthUser {
+
     private int id;
     private String fullName;
     private String username;
     private String email;
     private String password;
-    private String role;
+    private String role = "USER,ADMIN";
     private LocalDateTime createDate;
 }

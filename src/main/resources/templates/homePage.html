@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinematica</title>
+    <link rel="icon" href="/static/img/cinema.ico" type="image/x-icon">
     <link rel="stylesheet" href="/static/homePage.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -17,15 +18,20 @@
                 <button>HERE CINEMA</button>
             </div>
         </form>
-
         <nav class="navbar">
             <ul>
-                <li><a href="/movies">Movies</a></li>
-                <li th:if="${!isLoggedIn}"><a href="/login">Login</a></li>
-                <li th:if="${isLoggedIn}"><a href="/logout">Logout</a></li>
+                <li class="navbar-item"><a href="/movies" class="navbar-link">Movies</a></li>
+                <li class="navbar-item" th:if="${username != null}">
+                    <a th:href="${role == 'ADMIN' ? '/admin/profile' : '/user/profile'}" class="navbar-link">Profile</a>
+                </li>
+                <li class="navbar-item" th:if="${username != null}">
+                    <a href="/logout" class="navbar-link">Logout</a>
+                </li>
+                <li class="navbar-item" th:if="${username == null}">
+                    <a href="/login" class="navbar-link">Login</a>
+                </li>
             </ul>
         </nav>
-
     </div>
 </header>
 
@@ -66,12 +72,12 @@
         </div>
     </div>
 </section>
-
 <footer class="footer">
     <div class="container">
         <p>&copy; 2024 Cinematica. All rights reserved.</p>
     </div>
 </footer>
+
 <script>
     document.addEventListener('scroll', function() {
         const header = document.querySelector('.header');

@@ -39,4 +39,5 @@ public class MovieService implements BaseService<Movie> {
     public List<Movie> getAll() {
         return movieDao.getAll();
     }
+
 }

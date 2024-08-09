@@ -17,7 +17,8 @@ public class Movie {
     private String name;
     private String description;
     private LocalDate releaseDate;
-    private int categoryId;
+    private LocalDate endTime;
+    private String categoryName;
     private String posterImage;
     private LocalDate createDate;
 }

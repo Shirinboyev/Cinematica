@@ -10,7 +10,8 @@ import uz.pdp.daos.userDao.UserDao;
 import uz.pdp.model.AuthUser;
 
 import java.util.Optional;
-//@Service
+
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserDao userDao;
 
@@ -20,15 +21,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<AuthUser> optional = Optional.ofNullable(userDao.getByUsername(username));
+        Optional<AuthUser> optional = userDao.getByUsername(username);
         AuthUser authUser = optional.orElseThrow(() -> new BadCredentialsException("Username or password incorrect"));
-        String roles = authUser.getRole(); // ADMIN,USER
-        String[] split = roles.split(",");
-        UserDetails build = User
-                .withUsername(authUser.getUsername())
+        String[] roles = authUser.getRole().split(","); // ADMIN,USER
+        return User.withUsername(authUser.getUsername())
                 .password(authUser.getPassword())
-                .roles(split)
+                .roles(roles)
                 .build();
-        return build;
     }
 }
