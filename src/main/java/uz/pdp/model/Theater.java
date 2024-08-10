@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Rooms {
+public class Theater {
     private int id;
     private String name;
-    private int capacity;
+    private String location;
 }

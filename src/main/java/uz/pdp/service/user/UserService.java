@@ -45,4 +45,8 @@ public class UserService implements BaseService<AuthUser> {
         return userDao.getByUsername(username);
     }
 
+    public List<AuthUser> findByRole(String role) {
+        return userDao.findByRole(role);
+    }
+
 }

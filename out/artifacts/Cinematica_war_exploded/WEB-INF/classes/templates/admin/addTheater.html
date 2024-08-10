@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Data</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        .container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .container label {
+            display: block;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .container input[type="text"],
+        .container input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s;
+        }
+
+        .container input[type="text"]:focus,
+        .container input[type="number"]:focus {
+            border-color: #ff7eb3;
+        }
+
+        .container button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            background-color: #ff758c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .container button:hover {
+            background-color: #ff527b;
+            transform: translateY(-2px);
+        }
+
+        .container button:active {
+            background-color: #ff3e6d;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+<div class="container animate__animated animate__fadeInUp">
+    <h1>Add New Theater</h1>
+    <form action="/admin/addTheater" method="post">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter the name" required>
+
+        <label for="location">Capacity</label>
+        <input type="text" id="location" name="location" placeholder="Enter the location" required>
+
+        <button type="submit">Save</button>
+    </form>
+</div>
+</body>
+</html>

@@ -5,6 +5,7 @@ import uz.pdp.daos.movieDao.MovieDao;
 import uz.pdp.model.Movie;
 import uz.pdp.service.BaseService;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -16,7 +17,7 @@ public class MovieService implements BaseService<Movie> {
     }
 
     @Override
-    public void save(Movie entity) {
+    public void save(Movie entity) throws IOException {
         movieDao.save(entity);
     }
 

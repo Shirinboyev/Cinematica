@@ -1,5 +1,6 @@
 package uz.pdp.daos.screenDao;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -22,11 +23,13 @@ public class ScreenDao implements BaseDao<Screens> {
         private Screens mapScreen(ResultSet rs) throws SQLException {
             int id = rs.getInt("id");
             String name = rs.getString("name");
-            Integer roomId = rs.getInt("room_id");
+            int roomId = rs.getInt("room_id");
+            int capacity = rs.getInt("capacity");
             return Screens.builder()
                     .id(id)
                     .name(name)
                     .roomId(roomId)
+                    .capacity(capacity)
                     .build();
         }
 
@@ -34,14 +37,18 @@ public class ScreenDao implements BaseDao<Screens> {
 
     @Override
     public void save(Screens entity) {
-        String sql = "INSERT INTO screens (name, room_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, entity.getName(), entity.getRoomId());
+        String sql = "INSERT INTO screens (name, room_id, capacity) VALUES (?, ?, ?)";
+        try {
+            jdbcTemplate.update(sql, entity.getName(), entity.getRoomId(), entity.getCapacity());
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error saving screen: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public void update(Screens entity) {
-        String sql = "UPDATE screens SET name = ?, room_id = ? WHERE id = ?";
-        jdbcTemplate.update(sql, entity.getName(), entity.getRoomId(), entity.getId());
+        String sql = "UPDATE screens SET name = ?, room_id = ? , capacity =? where id = ?";
+        jdbcTemplate.update(sql, entity.getName(), entity.getRoomId(), entity.getId(), entity.getCapacity());
     }
 
     @Override
@@ -59,7 +66,17 @@ public class ScreenDao implements BaseDao<Screens> {
 
     @Override
     public List<Screens> getAll() {
-            String sql = "SELECT * FROM screens";
-            return jdbcTemplate.query(sql, rowMapper);
+        String sql = "SELECT s.id, s.name, s.room_id, r.name AS room_name, s.capacity " +
+                     "FROM screens s " +
+                     "JOIN rooms r ON s.room_id = r.id";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Screens screen = new Screens();
+            screen.setId(rs.getInt("id"));
+            screen.setName(rs.getString("name"));
+            screen.setRoomId(rs.getInt("room_id"));
+            screen.setCapacity(rs.getInt("capacity"));
+            return screen;
+        });
     }
 }

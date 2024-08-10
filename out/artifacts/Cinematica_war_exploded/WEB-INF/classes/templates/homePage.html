@@ -22,7 +22,7 @@
             <ul>
                 <li class="navbar-item"><a href="/movies" class="navbar-link">Movies</a></li>
                 <li class="navbar-item" th:if="${username != null}">
-                    <a th:href="${role == 'ADMIN' ? '/admin/profile' : '/user/profile'}" class="navbar-link">Profile</a>
+                    <a th:href="${role == 'ADMIN' ? '/admin' : '/user/profile'}" class="navbar-link">Profile</a>
                 </li>
                 <li class="navbar-item" th:if="${username != null}">
                     <a href="/logout" class="navbar-link">Logout</a>

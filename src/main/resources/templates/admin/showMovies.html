@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,57 +15,79 @@
             align-items: center;
             height: 100vh;
         }
-
         .container {
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             max-width: 1000px;
             width: 100%;
-            margin: 0 auto;
         }
-
         .container h1 {
             margin-bottom: 20px;
-            color: #333;
             font-size: 24px;
             text-align: center;
         }
-
         .container table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-
-        .container table th, .container table td {
+        .container table th,
+        .container table td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-
         .container table th {
             background-color: #f4f4f4;
             color: #333;
         }
-
         .container table tr:hover {
             background-color: #f1f1f1;
         }
-
-
-
+        .container button {
+            display: inline-block;
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .container button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Available Movies</h1>
-    <ul>
-        <li><strong>Title:</strong> Inception | <strong>Category:</strong> Sci-Fi | <strong>Start Time:</strong> 14:00 | <strong>End Time:</strong> 16:30</li>
-        <li><strong>Title:</strong> The Dark Knight | <strong>Category:</strong> Action | <strong>Start Time:</strong> 17:00 | <strong>End Time:</strong> 19:30</li>
-        <!-- Add more movie details here -->
-    </ul>
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Release Date</th>
+            <th>Duration (minutes)</th>
+            <th>Poster</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="movie : ${movies}">
+            <td th:text="${movie.name}">Title</td>
+            <td th:text="${movie.categoryName}">Category</td>
+            <td th:text="${movie.description}">Description</td>
+            <td th:text="${#dates.format(movie.releaseDate, 'yyyy-MM-dd')}">Release Date</td>
+            <td th:text="${movie.duration}">Duration</td>
+            <td><img th:src="@{/static/img/{poster}(poster=${movie.posterImage})}" alt="Poster" style="width: 100px; height: auto;"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

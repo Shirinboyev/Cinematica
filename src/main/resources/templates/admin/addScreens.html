@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Entry</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('/static/img/deadpool-home.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .container label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #555;
+        }
+        .container input[type="text"],
+        .container select,
+        .container input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .container button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .container button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Create New Screen</h1>
+    <form action="/admin/addScreen" method="post">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter name" required>
+
+        <label for="theater">Select Theater</label>
+        <select id="theater" name="theaterId" required>
+            <option value="">Select a theater</option>
+            <th:block th:each="entry : ${theaterMap}">
+                <option th:value="${entry.key}" th:text="${entry.value}"></option>
+            </th:block>
+        </select>
+
+        <label for="capacity">Capacity</label>
+        <input type="number" id="capacity" name="capacity" placeholder="Enter capacity" required>
+
+        <button type="submit">Create</button>
+    </form>
+</div>
+</body>
+</html>

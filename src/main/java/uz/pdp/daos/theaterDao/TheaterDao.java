@@ -1,39 +1,39 @@
-package uz.pdp.daos.roomsDao;
+package uz.pdp.daos.theaterDao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import uz.pdp.daos.BaseDao;
-import uz.pdp.model.Rooms;
+import uz.pdp.model.Theater;
 
 import java.util.List;
 
 @Component
-public class RoomDao implements BaseDao<Rooms> {
+public class TheaterDao implements BaseDao<Theater> {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Rooms> rowMapper = (rs, rowNum) -> {
+    private final RowMapper<Theater> rowMapper = (rs, rowNum) -> {
         int id = rs.getInt("id");
         String name = rs.getString("name");
-        int capacity = rs.getInt("capacity");
-        return new Rooms(id, name, capacity);
+        String location = rs.getString("location");
+        return new Theater(id, name, location);
     };
 
-    public RoomDao(JdbcTemplate jdbcTemplate) {
+    public TheaterDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public void save(Rooms entity) {
-        String sql = "INSERT INTO rooms (name, capacity) VALUES (?, ?)";
-        jdbcTemplate.update(sql, entity.getName(), entity.getCapacity());
+    public void save(Theater entity) {
+        String sql = "INSERT INTO rooms (name, location) VALUES (?, ?)";
+        jdbcTemplate.update(sql, entity.getName(), entity.getLocation());
     }
 
     @Override
-    public void update(Rooms entity) {
-        String sql = "UPDATE rooms SET name = ?, capacity = ? WHERE id = ?";
-        jdbcTemplate.update(sql, entity.getName(), entity.getCapacity(), entity.getId());
+    public void update(Theater entity) {
+        String sql = "UPDATE rooms SET name = ?, location = ? WHERE id = ?";
+        jdbcTemplate.update(sql, entity.getName(), entity.getLocation(), entity.getId());
 
     }
 
@@ -44,13 +44,13 @@ public class RoomDao implements BaseDao<Rooms> {
     }
 
     @Override
-    public Rooms getById(int id) {
+    public Theater getById(int id) {
         String sql = "SELECT * FROM rooms WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     @Override
-    public List<Rooms> getAll() {
+    public List<Theater> getAll() {
         String sql = "select * from rooms";
         return jdbcTemplate.query(sql, rowMapper);
     }
