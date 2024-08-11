@@ -6,7 +6,7 @@
     <title>Show Movies</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Arial', sans-serif;
             background: url('/static/img/deadpool-home.jpg') no-repeat center center fixed;
             background-size: cover;
             margin: 0;
@@ -14,19 +14,23 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            color: #333;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
             max-width: 1000px;
             width: 100%;
+            animation: fadeIn 1s ease-in;
         }
         .container h1 {
             margin-bottom: 20px;
-            font-size: 24px;
+            font-size: 28px;
             text-align: center;
+            color: #007bff;
+            animation: slideIn 1s ease-out;
         }
         .container table {
             width: 100%;
@@ -44,22 +48,61 @@
             color: #333;
         }
         .container table tr:hover {
-            background-color: #f1f1f1;
+            background-color: #e9ecef;
+            animation: backgroundChange 0.3s;
         }
-        .container button {
-            display: inline-block;
-            padding: 8px 12px;
-            font-size: 14px;
+        .container a {
+            text-decoration: none;
             color: #fff;
             background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
+            padding: 10px 15px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 14px;
+            transition: background-color 0.3s, transform 0.2s;
+            animation: fadeIn 1s ease-in;
         }
-        .container button:hover {
+        .container a:hover {
             background-color: #0056b3;
             transform: scale(1.05);
+        }
+        .container img {
+            width: 150px;
+            height: auto;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .container img:hover {
+            transform: scale(1.03);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes backgroundChange {
+            from {
+                background-color: #e9ecef;
+            }
+            to {
+                background-color: #f4f4f4;
+            }
         }
     </style>
 </head>
@@ -74,18 +117,22 @@
             <th>Description</th>
             <th>Release Date</th>
             <th>Duration (minutes)</th>
-            <th>Poster</th>
+            <th>Trailer</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="movie : ${movies}">
-            <td th:text="${movie.name}">Title</td>
-            <td th:text="${movie.categoryName}">Category</td>
-            <td th:text="${movie.description}">Description</td>
-            <td th:text="${#dates.format(movie.releaseDate, 'yyyy-MM-dd')}">Release Date</td>
-            <td th:text="${movie.duration}">Duration</td>
-            <td><img th:src="@{/static/img/{poster}(poster=${movie.posterImage})}" alt="Poster" style="width: 100px; height: auto;"></td>
-        </tr>
+            <tr th:each="movie : ${movies}">
+                <td th:text="${movie.title}">Title</td>
+                <td th:text="${movie.categoryName}">Category</td>
+                <td>
+                    <a th:href="@{/admin/moviesDetails.html(id=${movie.id})}">Description</a>
+                </td>
+                <td th:text="${movie.releaseDate}">Release Date</td>
+                <td th:text="${movie.duration}">Duration</td>
+                <td>
+                    <a th:href="${movie.trailer_url}" target="_blank">Watch Trailer</a>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

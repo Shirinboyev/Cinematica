@@ -1,11 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Movies</title>
-    <link rel="icon" href="/static/img/cinema.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('/static/img/deadpool-home.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            max-width: 1200px;
+            margin: 20px auto;
+            animation: fadeIn 1s ease-in;
+        }
+        .container h1 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-align: center;
+            color: #007bff;
+            animation: slideIn 1s ease-out;
+        }
+        .movies-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .movie-card {
+            width: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+        .movie-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.2s;
+        }
+        .movie-card img:hover {
+            transform: scale(1.05);
+        }
+        .movie-card a {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+            background-color: #f8f9fa;
+            border-top: 1px solid #ddd;
+            transition: background-color 0.3s;
+        }
+        .movie-card a:hover {
+            background-color: #e9ecef;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
-
+<div class="container">
+    <h1>Available Movies</h1>
+    <div class="movies-grid">
+        <div th:each="movie : ${movies}" class="movie-card">
+            <a th:href="@{/movies/details/{id}(id=${movie.id})}">
+                <img th:src="@{/static/img/{poster}(poster=${movie.posterImage})}" th:alt="${movie.title}" />
+                <span th:text="${movie.title}">Movie Title</span>
+            </a>
+        </div>
+    </div>
+</div>
 </body>
 </html>

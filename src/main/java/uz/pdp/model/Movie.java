@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Data
@@ -14,12 +13,11 @@ import java.time.LocalDate;
 @Builder
 public class Movie {
     private int id;
-    private String name;
+    private String title;
     private String description;
+    private String Trailer_url;
     private LocalDate releaseDate;
     private String categoryName;
     private int duration;
     private String posterImage;
-    private String Trailer_url;
-    private LocalDate createDate;
 }

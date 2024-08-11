@@ -36,9 +36,9 @@
         }
         .container input[type="text"],
         .container textarea,
-        .container input[type="time"],
-        .container input[type="file"],
-        .container input[type="number"] {
+        .container input[type="date"],
+        .container input[type="number"],
+        .container input[type="file"] {
             width: 100%;
             padding: 8px; /* Reduced padding */
             margin-bottom: 15px; /* Reduced margin */
@@ -65,15 +65,14 @@
 <div class="container">
     <h1>Add a New Movie</h1>
     <form action="/admin/addMovie" method="post" enctype="multipart/form-data">
-
         <label for="movieTitle">Movie Title</label>
         <input type="text" id="movieTitle" name="movieTitle" placeholder="Enter the movie title" required>
 
         <label for="movieCategory">Movie Category</label>
         <input type="text" id="movieCategory" name="categoryName" placeholder="Enter the movie category" required>
 
-        <label for="trailerUrl">Movie Category</label>
-        <input type="text" id="trailerUrl" name="trailerUrl" placeholder="Enter the movie trail url" required>
+        <label for="trailerUrl">Trailer URL</label>
+        <input type="text" id="trailerUrl" name="trailerUrl" placeholder="Enter the movie trailer URL" required>
 
         <label for="movieDescription">Movie Description</label>
         <textarea id="movieDescription" name="description" rows="3" placeholder="Enter the movie description" required></textarea>

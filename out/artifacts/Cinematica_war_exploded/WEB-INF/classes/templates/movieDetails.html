@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${movie.title}">Movie Title</title>
+    <link rel="stylesheet" href="/static/movies.css">
+</head>
+<body>
+<div class="container">
+    <div class="movie-detail">
+        <img th:src="@{/static/img/{poster}(poster=${movie.posterImage})}" th:alt="${movie.title}" class="movie-poster" />
+        <h1 th:text="${movie.title}">Movie Title</h1>
+        <p th:text="${movie.description}">Movie Description</p>
+        <p><strong>Category:</strong> <span th:text="${movie.categoryName}">Category</span></p>
+        <p><strong>Release Date:</strong> <span th:text="${movie.releaseDate}">Release Date</span></p>
+        <p><strong>Duration:</strong> <span th:text="${movie.duration}">Duration</span> minutes</p>
+        <a th:href="${movie.trailer_url}" target="_blank" class="trailer-link">Watch Trailer</a>
+    </div>
+</div>
+</body>
+</html>

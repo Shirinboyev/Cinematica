@@ -1,111 +1,88 @@
 package uz.pdp.daos.movieDao;
-import org.apache.commons.codec.binary.Base64;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
-import uz.pdp.daos.BaseDao;
-import uz.pdp.imageEncoder.ImageEncoder;
 import uz.pdp.model.Movie;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
 @Component
-public class MovieDao implements BaseDao<Movie> {
+public class MovieDao {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 
-    public MovieDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public MovieDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     RowMapper<Movie> rowMapper = (rs, rowNum) -> {
         int id = rs.getInt("id");
         String name = rs.getString("name");
         String description = rs.getString("description");
+        String trailerUrl = rs.getString("trailer_url");
         LocalDate releaseDate = convertToLocalDate(rs.getTimestamp("release_date"));
-        int duration=rs.getInt("duration");
+        int duration = rs.getInt("duration");
         String categoryName = rs.getString("category_name");
         String posterImage = rs.getString("poster_image");
-        LocalDate createDate = convertToLocalDate(rs.getTimestamp("create_date"));
 
-        return Movie.builder()
-                .id(id)
-                .name(name)
-                .description(description)
-                .releaseDate(releaseDate)
-                .duration(duration)
-                .categoryName(categoryName)
-                .posterImage(posterImage)
-                .createDate(createDate)
-                .build();
+        return new Movie(id, name, description, trailerUrl, releaseDate, categoryName, duration, posterImage);
     };
 
-    @Override
-    public void save(Movie movie) throws IOException {
-        String sql = "INSERT INTO movies(name, description, release_date, category_name, poster_image, create_date, duration,trailer_url) " +
-                "VALUES(:name, :description, :release_date, :category_name, :poster_image, :create_date, :duration, :trailer_url)";
-
-        String base64Image = movie.getPosterImage();
+    public void save(Movie movie) {
+        String sql = "INSERT INTO movies(name, description, release_date, category_name, poster_image, duration, trailer_url) " +
+                "VALUES(:name, :description, :release_date, :category_name, :poster_image, :duration, :trailer_url)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", movie.getName())
+                .addValue("name", movie.getTitle())
                 .addValue("description", movie.getDescription())
                 .addValue("release_date", convertToTimestamp(movie.getReleaseDate()))
                 .addValue("category_name", movie.getCategoryName())
-                .addValue("poster_image", base64Image)
-                .addValue("create_date", convertToTimestamp(movie.getCreateDate()))
+                .addValue("poster_image", movie.getPosterImage())
                 .addValue("duration", movie.getDuration())
-                .addValue("trailer_url",movie.getTrailer_url());
+                .addValue("trailer_url", movie.getTrailer_url());
 
-        jdbcTemplate.update(sql, params);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
+    public void update(Movie movie) {
+        String sql = "UPDATE movies SET name=:name, description=:description, release_date=:release_date, category_name=:category_name, " +
+                "poster_image=:poster_image,  duration=:duration, trailer_url=:trailer_url WHERE id=:id";
 
-    private String convertToBase64(String file) throws IOException {
-        byte[] fileContent = file.getBytes();
-        return Base64.encodeBase64String(fileContent);
-    }
-
-
-    @Override
-    public void update(Movie entity) {
-        String sql = "UPDATE movies SET name=:name, description=:description, release_date=:release_date,category_name=:category_name, poster_image=:poster_image, create_date=:create_date, trailer_url=:trailer_url WHERE id=:id";
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", entity.getName())
-                .addValue("description", entity.getDescription())
-                .addValue("release_date", convertToTimestamp(entity.getReleaseDate()))
-                .addValue("category_name", entity.getCategoryName())
-                .addValue("poster_image", entity.getPosterImage())
-                .addValue("create_date", convertToTimestamp(entity.getCreateDate()))
-                .addValue("duration", entity.getDuration())
-                .addValue("trailer_url",entity.getTrailer_url())
-                .addValue("id", entity.getId());
+                .addValue("name", movie.getTitle())
+                .addValue("description", movie.getDescription())
+                .addValue("release_date", convertToTimestamp(movie.getReleaseDate()))
+                .addValue("category_name", movie.getCategoryName())
+                .addValue("poster_image", movie.getPosterImage())
+                .addValue("duration", movie.getDuration())
+                .addValue("trailer_url", movie.getTrailer_url())
+                .addValue("id", movie.getId());
 
-        jdbcTemplate.update(sql, params);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
-    @Override
-    public void delete(int entity) {
+    public void delete(int id) {
         String sql = "DELETE FROM movies WHERE id=:id";
-        MapSqlParameterSource params = new MapSqlParameterSource().addValue("id", entity);
-        jdbcTemplate.update(sql, params);
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("id", id);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
-    @Override
     public Movie getById(int id) {
-        String sql = "SELECT * FROM movies WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper);
+        String sql = "SELECT * FROM movies WHERE id = :id";
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("id", id);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, rowMapper);
     }
 
-    @Override
     public List<Movie> getAll() {
         String sql = "SELECT * FROM movies";
-        return jdbcTemplate.query(sql, rowMapper);
+        return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 
     private Timestamp convertToTimestamp(LocalDate localDate) {

@@ -5,17 +5,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import uz.pdp.model.AuthUser;
+import uz.pdp.model.Movie;
+import uz.pdp.service.movie.MovieService;
 import uz.pdp.service.user.UserService;
+
+import java.util.List;
 
 @Controller
 public class HomeController {
     private final UserService userService;
+    private final MovieService movieService;
     private  AuthUser authUser;
 
-    public HomeController(UserService userService) {
+    public HomeController(UserService userService, MovieService movieService) {
         this.userService = userService;
+        this.movieService = movieService;
     }
 
     @GetMapping("/")
@@ -35,10 +41,21 @@ public class HomeController {
 
     @GetMapping("/movies")
     public String moviePage(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isLoggedIn = authentication != null && authentication.isAuthenticated();
-        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("movies", movieService.getAll());
         return "movie";
+    }
+
+
+
+    @GetMapping("/movies/details/{id}")
+    public String userMovieDetails1(@PathVariable("id") int id, Model model) {
+        Movie movie = movieService.getById(id);
+        if (movie != null) {
+            model.addAttribute("movie", movie);
+            return "movieDetails";
+        } else {
+            return "error";
+        }
     }
 
 }

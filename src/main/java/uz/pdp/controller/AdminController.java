@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.pdp.daos.screenDao.ScreenDao;
 import uz.pdp.daos.theaterDao.TheaterDao;
 import uz.pdp.model.AuthUser;
@@ -21,12 +23,8 @@ import uz.pdp.service.screen.ScreenService;
 import uz.pdp.service.user.UserService;
 
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -46,44 +44,52 @@ public class AdminController {
         this.screenService = screenService;
     }
 
+
+
+    @GetMapping("/admin/moviesDetails.html")
+    public String getMovieDescription(@RequestParam("id") int id, Model model) {
+        Movie movie = movieService.getById(id);
+        if (movie != null) {
+            model.addAttribute("movie", movie);
+            return "/admin/moviesDetails";
+        } else {
+            return "error";
+        }
+    }
+
+
     @GetMapping("/admin")
     public String adminPage(Model model) {
         model.addAttribute("page", "ADMIN PAGE");
         return "admin";
     }
 
-    @GetMapping("/admin/addMovies")
-    public String addMoviePage() {
-        return "/admin/addMovie";
+    @GetMapping("/admin/addMovie")
+    public String showAddMovieForm(Model model) {
+        model.addAttribute("movie", new Movie());
+        return "admin/addMovie";
     }
 
     @PostMapping("/admin/addMovie")
-    public String addMovie(
-            @RequestParam("movieTitle") String movieTitle,
-            @RequestParam("movieCategory") String movieCategory,
-            @RequestParam("movieDescription") String movieDescription,
-            @RequestParam("releaseDate") String releaseDateStr,
-            @RequestParam("duration") int duration,
-            @RequestParam("posterImage") MultipartFile posterImage,
-            Model model
-    ) throws IOException {
-        LocalDate releaseDate = LocalDate.parse(releaseDateStr);
-
+    public String addMovie(@RequestParam("movieTitle") String title,
+                           @RequestParam("description") String description,
+                           @RequestParam("trailerUrl") String trailerUrl,
+                           @RequestParam("categoryName") String categoryName,
+                           @RequestParam("releaseDate") LocalDate releaseDate,
+                           @RequestParam("duration") int duration,
+                           @RequestParam("posterImage") MultipartFile posterImage,
+                           RedirectAttributes redirectAttributes) {
         Movie movie = new Movie();
-        movie.setName(movieTitle);
-        movie.setCategoryName(movieCategory);
-        movie.setDescription(movieDescription);
+        movie.setTitle(title);
+        movie.setDescription(description);
+        movie.setTrailer_url(trailerUrl);
+        movie.setCategoryName(categoryName);
         movie.setReleaseDate(releaseDate);
         movie.setDuration(duration);
-        movie.setCreateDate(LocalDate.now());
+        movieService.addMovie(movie, posterImage);
 
-        String base64Image = Base64.getEncoder().encodeToString(posterImage.getBytes());
-        movie.setPosterImage(base64Image);
-
-        movieService.save(movie);
-
-        model.addAttribute("message", "Movie added successfully!");
-        return "redirect:/admin/addMovies";
+        redirectAttributes.addFlashAttribute("message", "Movie successfully added!");
+        return "redirect:/admin";
     }
 
 
@@ -131,7 +137,7 @@ public class AdminController {
         rooms.setLocation(location);
         roomService.save(rooms);
         model.addAttribute("message", "Theater added successfully!");
-        return "redirect:/admin/addTheater";
+        return "redirect:/admin";
     }
     @GetMapping("/admin/addScreen")
     public String showAddScreenForm(Model model) {
@@ -153,7 +159,7 @@ public class AdminController {
         screens.setCapacity(capacity);
         screenDao.save(screens);
         model.addAttribute("message", "Screen added successfully!");
-        return "redirect:/admin/addScreen";
+        return "redirect:/admin";
     }
     @GetMapping("/admin/showScreens")
     public String screens(Model model) {
