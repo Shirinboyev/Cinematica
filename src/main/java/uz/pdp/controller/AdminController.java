@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -23,6 +22,7 @@ import uz.pdp.service.screen.ScreenService;
 import uz.pdp.service.user.UserService;
 
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,6 +79,7 @@ public class AdminController {
                            @RequestParam("duration") int duration,
                            @RequestParam("posterImage") MultipartFile posterImage,
                            RedirectAttributes redirectAttributes) {
+
         Movie movie = new Movie();
         movie.setTitle(title);
         movie.setDescription(description);
@@ -86,9 +87,14 @@ public class AdminController {
         movie.setCategoryName(categoryName);
         movie.setReleaseDate(releaseDate);
         movie.setDuration(duration);
-        movieService.addMovie(movie, posterImage);
 
-        redirectAttributes.addFlashAttribute("message", "Movie successfully added!");
+        try {
+            movieService.addMovie(movie, posterImage);
+            redirectAttributes.addFlashAttribute("message", "Movie successfully added!");
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to upload movie poster!");
+        }
+
         return "redirect:/admin";
     }
 

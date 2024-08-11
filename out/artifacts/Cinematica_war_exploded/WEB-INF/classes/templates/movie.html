@@ -90,7 +90,7 @@
         <div th:each="movie : ${movies}" class="movie-card">
             <a th:href="@{/movies/details/{id}(id=${movie.id})}">
                 <!--/*@thymesVar id="posterImage" type="uz.pdp.model.Movie"*/-->
-                <img th:src="@{${movie.posterImage}}" th:alt="${movie.title}" />
+                <img th:src="@{/static/img/{filename}(filename=${movie.posterImage})}" th:alt="${movie.title}" />
                 <span th:text="${movie.title}">Movie Title</span>
             </a>
         </div>

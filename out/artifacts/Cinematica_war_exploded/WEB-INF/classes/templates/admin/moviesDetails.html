@@ -7,7 +7,6 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: url('/static/img/deadpool-3.png') no-repeat center center fixed;
             background-size: cover;
             margin: 0;
             display: flex;
@@ -86,7 +85,7 @@
         }
     </style>
 </head>
-<body>
+<body th:style="'background: url(' + @{/static/img/{filename}(filename=${movie.posterImage})} + ') no-repeat center center fixed; background-size: cover;'">
 <div class="container">
     <h1>Movie Description</h1>
     <p th:text="${movie.description}">Movie description will be here</p>

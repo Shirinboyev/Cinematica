@@ -1,13 +1,10 @@
 /* Apply background image and styling to body */
 body {
-    background: url('/static/img/deadpool-3.png') no-repeat center center fixed;
-    background-size: cover;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     color: #fff;
 }
-
 /* Center the container and add styling */
 .container {
     display: flex;

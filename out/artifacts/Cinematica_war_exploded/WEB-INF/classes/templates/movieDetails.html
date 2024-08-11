@@ -6,10 +6,9 @@
     <title th:text="${movie.title}">Movie Title</title>
     <link rel="stylesheet" href="/static/movies.css">
 </head>
-<body>
+<body th:style="'background: url(' + @{/static/img/{filename}(filename=${movie.posterImage})} + ') no-repeat center center fixed; background-size: cover;'">
 <div class="container">
     <div class="movie-detail">
-        <img th:src="@{${movie.posterImage}}" th:alt="${movie.title}" class="movie-poster" />
         <h1 th:text="${movie.title}">Movie Title</h1>
         <p th:text="${movie.description}">Movie Description</p>
         <p><strong>Category:</strong> <span th:text="${movie.categoryName}">Category</span></p>
