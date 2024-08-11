@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,31 +47,18 @@
 
 <section class="featured-movies">
     <div class="container">
-        <h2 class="animate__animated animate__fadeInUp">Featured Movies</h2>
-        <div class="movies-grid animate__animated animate__fadeInUp">
-            <div class="movie-card animate__animated animate__zoomIn">
-                <img src="../static/img/akvamen-2.jpg" alt="Akvamen 2">
-                <h3>Akvamen 2</h3>
-            </div>
-            <div class="movie-card animate__animated animate__zoomIn">
-                <img src="../static/img/choqintirgan-ota.jpg" alt="Choqintirgan Ota">
-                <h3>Choqintirgan Ota</h3>
-            </div>
-            <div class="movie-card animate__animated animate__zoomIn">
-                <img src="../static/img/deadpool-3.png" alt="Deadpool 3">
-                <h3>Deadpool 3</h3>
-            </div>
-            <div class="movie-card animate__animated animate__zoomIn">
-                <img src="../static/img/titanik.jpg" alt="Titanik">
-                <h3>Titanik</h3>
-            </div>
-            <div class="movie-card animate__animated animate__zoomIn">
-                <img src="../static/img/x-men.jpg" alt="X-Men">
-                <h3>X-Men</h3>
+        <h1>Available Movies</h1>
+        <div class="movies-grid">
+            <div th:each="movie : ${movies}" class="movie-card">
+                <a th:href="@{/movies/details/{id}(id=${movie.id})}">
+                    <img th:src="@{/static/img/{poster}(poster=${movie.posterImage})}" th:alt="${movie.title}" />
+                    <span th:text="${movie.title}">Movie Title</span>
+                </a>
             </div>
         </div>
     </div>
 </section>
+
 <footer class="footer">
     <div class="container">
         <p>&copy; 2024 Cinematica. All rights reserved.</p>

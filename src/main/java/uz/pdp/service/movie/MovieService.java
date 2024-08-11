@@ -7,7 +7,10 @@ import uz.pdp.imageEncoder.FileUploadService;
 import uz.pdp.model.Movie;
 import uz.pdp.service.BaseService;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -25,17 +28,27 @@ public class MovieService implements BaseService<Movie> {
 
 
     public void addMovie(Movie movie, MultipartFile posterFile) {
-        String uploadDir = "C:\\Users\\gayra\\OneDrive\\Desktop\\file\\Cinematica\\src\\main\\resources\\static\\img\\";
+        String uploadDir = "src/main/resources/static/img/";
+        File uploadPath = new File(uploadDir);
+        if (!uploadPath.exists()) {
+            uploadPath.mkdirs();
+        }
         String fileName = posterFile.getOriginalFilename();
-        try {
-            fileUploadService.saveFile(uploadDir, fileName, posterFile);
-            movie.setPosterImage(uploadDir + fileName);
+        File destinationFile = new File(uploadDir + fileName);
+
+        try (InputStream inputStream = posterFile.getInputStream();
+             FileOutputStream outputStream = new FileOutputStream(destinationFile)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            movie.setPosterImage("/static/img/" + fileName);
             movieDao.save(movie);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     @Override
     public void save(Movie entity) throws IOException {
         movieDao.save(entity);

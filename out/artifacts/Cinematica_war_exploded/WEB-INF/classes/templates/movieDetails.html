@@ -9,7 +9,7 @@
 <body>
 <div class="container">
     <div class="movie-detail">
-        <img th:src="@{/static/img/{poster}(poster=${movie.posterImage})}" th:alt="${movie.title}" class="movie-poster" />
+        <img th:src="@{${movie.posterImage}}" th:alt="${movie.title}" class="movie-poster" />
         <h1 th:text="${movie.title}">Movie Title</h1>
         <p th:text="${movie.description}">Movie Description</p>
         <p><strong>Category:</strong> <span th:text="${movie.categoryName}">Category</span></p>

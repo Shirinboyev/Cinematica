@@ -37,6 +37,12 @@ public class HomeController {
         }
         return "homePage";
     }
+    @GetMapping("/home")
+    public String home1(Model model) {
+        List<Movie> movies = movieService.getAll();
+        model.addAttribute("movies", movies);
+        return "homePage";
+    }
 
 
     @GetMapping("/movies")
@@ -57,5 +63,7 @@ public class HomeController {
             return "error";
         }
     }
+
+
 
 }
