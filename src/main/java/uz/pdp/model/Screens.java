@@ -13,5 +13,5 @@ public class Screens {
     private int id;
     private String name;
     private int roomId;
-        private int capacity;
+    private int capacity;
 }

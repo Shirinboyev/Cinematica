@@ -6,15 +6,29 @@
     <title th:text="${movie.title}">Movie Title</title>
     <link rel="stylesheet" href="/static/movies.css">
 </head>
-<body th:style="'background: url(' + @{/static/img/{filename}(filename=${movie.posterImage})} + ') no-repeat center center fixed; background-size: cover;'">
-<div class="container">
+<body th:style="'background: url(' + @{/static/img/{filename}(filename=${movie.posterImage})} + ') no-repeat center center fixed; background-size: cover;'"><div class="container">
     <div class="movie-detail">
         <h1 th:text="${movie.title}">Movie Title</h1>
         <p th:text="${movie.description}">Movie Description</p>
         <p><strong>Category:</strong> <span th:text="${movie.categoryName}">Category</span></p>
         <p><strong>Release Date:</strong> <span th:text="${movie.releaseDate}">Release Date</span></p>
         <p><strong>Duration:</strong> <span th:text="${movie.duration}">Duration</span> minutes</p>
-        <a th:href="${movie.trailer_url}" target="_blank" class="trailer-link">Watch Trailer</a>
+        <a th:href="@{${movie.trailer_url}}" target="_blank" class="trailer-link">Watch Trailer</a>
+        <div class="show-sessions">
+            <h2>Showtimes</h2>
+            <div th:if="${showTimes != null && !showTimes.isEmpty()}">
+                <ul>
+                    <li th:each="showTime : ${showTimes}">
+                        <a th:href="@{/showtime/{id}(id=${showTime.id})}"
+                           th:text="${#dates.format(showTime.showTime, 'yyyy-MM-dd HH:mm')}">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div th:if="${showTimes == null || showTimes.isEmpty()}">
+                <p>No showtimes available.</p>
+            </div>
+        </div>
     </div>
 </div>
 </body>

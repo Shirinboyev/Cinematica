@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${movie.title}">Movie Title</title>
+    <link rel="stylesheet" href="/static/showTimeDetails.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="showtime-detail animate__animated animate__fadeIn">
+        <h1 th:text="${movie.title}">Movie Title</h1>
+        <p><strong>Showtime:</strong> <span th:text="${#dates.format(showTime.showTime, 'yyyy-MM-dd HH:mm')}">Showtime</span></p>
+        <p><strong>Screen:</strong> <span th:text="${screen.name}">Screen Name</span></p>
+        <p><strong>Price for 1 person:</strong> <span th:text="${showTime.price}" id="pricePerSeat">Price</span></p>
+        <div class="seats-container animate__animated animate__zoomIn">
+            <h2>Select Your Seats</h2>
+            <div class="seats-grid" data-capacity="${showTime.capacity}">
+                <div th:each="i : ${#numbers.sequence(1, screen.capacity)}" class="seat" th:data-seat-number="${i}" onclick="selectSeat(this)">
+                    <span th:text="${i}"></span>
+                </div>
+            </div>
+            <div class="seat-info">
+                <h3>Selected Seats:</h3>
+                <div id="selectedSeatsDisplay">None</div>
+                <p><strong>Total Price:</strong> <span id="totalPrice">0.00</span></p>
+            </div>
+            <form id="selection-form" action="/buy-ticket" method="POST">
+                <input type="hidden" id="selectedSeats" name="seats">
+                <input type="hidden" id="totalPriceInput" name="price">
+                <input type="hidden" name="showtimeId" th:value="${showTime.id}">
+                <div class="card-info">
+                    <label for="cardNumber">Card Number:</label>
+                    <input type="text" id="cardNumber" name="cardNumber" required placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19">
+                </div>
+                <button type="submit" class="submit-btn">Buy Ticket</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function selectSeat(seat) {
+        seat.classList.toggle('selected');
+        updateSelectedSeats();
+    }
+
+    function updateSelectedSeats() {
+        const selectedSeats = document.querySelectorAll('.seat.selected');
+        const seatNumbers = Array.from(selectedSeats).map(seat => seat.getAttribute('data-seat-number'));
+        const pricePerSeat = parseFloat(document.getElementById('pricePerSeat').textContent);
+        const totalPrice = seatNumbers.length * pricePerSeat;
+
+        document.getElementById('selectedSeatsDisplay').textContent = seatNumbers.join(', ') || 'None';
+        document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+        document.getElementById('selectedSeats').value = seatNumbers.join(',');
+        document.getElementById('totalPriceInput').value = totalPrice.toFixed(2);
+    }
+</script>
+</body>
+</html>

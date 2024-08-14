@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
+    <title>Admin Dashboard</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -15,68 +19,105 @@
             display: grid;
             grid-template-columns: 250px 1fr;
             height: 100vh;
+            overflow: hidden;
         }
         .sidebar {
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             padding: 20px;
             color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            animation: slideInLeft 0.5s ease-out;
         }
         .sidebar h2 {
             margin-bottom: 20px;
             font-weight: 700;
+            font-size: 24px;
         }
         .sidebar a {
             text-decoration: none;
             width: 100%;
             display: block;
-            padding: 12px;
+            padding: 15px;
             margin: 10px 0;
             font-size: 16px;
             font-weight: 500;
-            border-radius: 5px;
+            border-radius: 8px;
             color: #fff;
-            background-color: rgba(163, 204, 33, 0.8);
-            transition: background-color 0.3s ease;
+            background-color: #007bff;
+            transition: background-color 0.3s ease, transform 0.3s ease;
             text-align: center;
         }
         .sidebar a:hover {
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
         .content-area {
             padding: 40px;
-            background-color: rgba(150, 134, 134, 0.9); /* Semi-transparent content area */
+            background-color: rgba(122, 116, 116, 0.9); /* Semi-transparent content area */
             overflow-y: auto;
             border-radius: 8px;
             margin: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.6s ease-out;
         }
         .content-area h1 {
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 20px;
             color: #333;
+            font-weight: 700;
+            animation: fadeIn 1s ease-in;
         }
         .content {
             font-size: 18px;
             color: #555;
+            line-height: 1.6;
+        }
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
-<div class="sidebar">
+<div class="sidebar animate__animated animate__slideInLeft">
     <h2>Admin Dashboard</h2>
     <a href="/admin/profile"><i class="fas fa-user-circle"></i> Profile</a>
     <a href="/admin/addMovie"><i class="fas fa-film"></i> Add Movie</a>
     <a href="/admin/showMovies"><i class="fas fa-play-circle"></i> Show Movies</a>
-    <a href="/admin/showUsers"><i class="fas fa-theater-masks"></i> Show Users</a>
+    <a href="/admin/showUsers"><i class="fas fa-users"></i> Show Users</a>
     <a href="/admin/addTheater"><i class="fas fa-theater-masks"></i> Add Theater</a>
     <a href="/admin/showTheaters"><i class="fas fa-theater-masks"></i> Show Theater</a>
-    <a href="/admin/addScreen"><i class="fas fa-theater-masks"></i> Add Screen</a>
-    <a href="/admin/showScreens"><i class="fas fa-theater-masks"></i> Show Screen</a>
+    <a href="/admin/addScreen"><i class="fas fa-screen"></i> Add Screen</a>
+    <a href="/admin/showScreens"><i class="fas fa-screen"></i> Show Screen</a>
 </div>
-<div class="content-area">
+<div class="content-area animate__animated animate__fadeInUp">
     <h1>Page Title</h1>
     <div class="content">Your content goes here.</div>
 </div>

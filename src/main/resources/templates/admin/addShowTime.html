@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Showtime</title>
+    <link rel="stylesheet" href="/static/movies.css">
+</head>
+<body>
+<div class="container">
+    <h1>Create Showtime</h1>
+    <form action="/admin/addShowTime" method="post">
+        <!-- Hidden field for movieId -->
+        <input type="hidden" name="movieId" th:value="${movieId}" />
+
+        <!-- Screen Dropdown -->
+        <label for="screenId">Screen:</label>
+        <select id="screenId" name="screenId" required>
+            <option value="">Select a Screen</option>
+            <th:block th:each="screen : ${screens}">
+                <option th:value="${screen.id}" th:text="${screen.name}"></option>
+            </th:block>
+        </select>
+
+        <!-- Show Time Input -->
+        <label for="showTime">Show Time:</label>
+        <input type="datetime-local" id="showTime" name="showTime" required />
+
+        <!-- Price Input -->
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" placeholder="price" min="0" required />
+
+        <!-- Submit Button -->
+        <button type="submit" class="button">Add Showtime</button>
+    </form>
+</div>
+</body>
+</html>

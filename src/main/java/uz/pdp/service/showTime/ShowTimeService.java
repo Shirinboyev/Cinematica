@@ -40,4 +40,8 @@ public class ShowTimeService implements BaseService<ShowTime>{
     public List<ShowTime> getAll() {
         return showTimeDao.getAll();
     }
+
+    public List<ShowTime> getShowTimeByMovieId(int movieId) {
+        return showTimeDao.getShowTimesByMovieId(movieId);
+    }
 }

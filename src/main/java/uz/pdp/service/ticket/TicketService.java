@@ -40,4 +40,8 @@ public class TicketService implements BaseService<Tickets> {
     public List<Tickets> getAll() {
         return ticketDao.getAll();
     }
+
+    public List<Integer> getBookedSeats(int id){
+        return ticketDao.getBookedSeats(id);
+    }
 }

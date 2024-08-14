@@ -1,32 +1,32 @@
 package uz.pdp.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.pdp.daos.screenDao.ScreenDao;
 import uz.pdp.daos.theaterDao.TheaterDao;
-import uz.pdp.model.AuthUser;
-import uz.pdp.model.Movie;
-import uz.pdp.model.Screens;
-import uz.pdp.model.Theater;
+import uz.pdp.model.*;
 import uz.pdp.service.movie.MovieService;
 import uz.pdp.service.room.RoomService;
 import uz.pdp.service.screen.ScreenService;
+import uz.pdp.service.showTime.ShowTimeService;
 import uz.pdp.service.user.UserService;
 
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 @Controller
 public class AdminController {
 
@@ -35,28 +35,28 @@ public class AdminController {
     private final RoomService roomService;
     private final ScreenDao screenDao;
     private final ScreenService screenService;
+    private final ShowTimeService showTimeService;
 
-    public AdminController(MovieService movieService, UserService userService, TheaterDao roomDao, RoomService roomService, ScreenDao screenDao, ScreenService screenService) {
+    @Autowired
+    public AdminController(MovieService movieService, UserService userService, RoomService roomService, ScreenDao screenDao, ScreenService screenService, ShowTimeService showTimeService) {
         this.movieService = movieService;
         this.userService = userService;
         this.roomService = roomService;
         this.screenDao = screenDao;
         this.screenService = screenService;
+        this.showTimeService = showTimeService;
     }
-
-
 
     @GetMapping("/admin/moviesDetails.html")
     public String getMovieDescription(@RequestParam("id") int id, Model model) {
         Movie movie = movieService.getById(id);
         if (movie != null) {
             model.addAttribute("movie", movie);
-            return "/admin/moviesDetails";
+            return "admin/moviesDetails";
         } else {
             return "error";
         }
     }
-
 
     @GetMapping("/admin")
     public String adminPage(Model model) {
@@ -75,7 +75,7 @@ public class AdminController {
                            @RequestParam("description") String description,
                            @RequestParam("trailerUrl") String trailerUrl,
                            @RequestParam("categoryName") String categoryName,
-                           @RequestParam("releaseDate") LocalDate releaseDate,
+                           @RequestParam("releaseDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate releaseDate,
                            @RequestParam("duration") int duration,
                            @RequestParam("posterImage") MultipartFile posterImage,
                            RedirectAttributes redirectAttributes) {
@@ -98,7 +98,6 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-
     @GetMapping("/admin/profile")
     public String profilePage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -117,7 +116,6 @@ public class AdminController {
         }
     }
 
-
     @GetMapping("/admin/showMovies")
     public String showMoviesPage(Model model) {
         List<Movie> moviesList = movieService.getAll();
@@ -125,48 +123,51 @@ public class AdminController {
         return "admin/showMovies";
     }
 
-
     @GetMapping("/admin/showUsers")
     public String showUsersPage(Model model) {
         List<AuthUser> users = userService.findByRole("USER");
         model.addAttribute("users", users);
-        return "/admin/showUsers";
+        return "admin/showUsers";
     }
+
     @GetMapping("/admin/addTheater")
     public String addTheaterPage() {
-        return "/admin/addTheater";
+        return "admin/addTheater";
     }
+
     @PostMapping("/admin/addTheater")
     public String addTheater(@RequestParam("name") String name, @RequestParam("location") String location, Model model) {
-        Theater rooms = new Theater();
-        rooms.setName(name);
-        rooms.setLocation(location);
-        roomService.save(rooms);
+        Theater theater = new Theater();
+        theater.setName(name);
+        theater.setLocation(location);
+        roomService.save(theater);
         model.addAttribute("message", "Theater added successfully!");
         return "redirect:/admin";
     }
+
     @GetMapping("/admin/addScreen")
     public String showAddScreenForm(Model model) {
         List<Theater> theaters = roomService.getAll();
         Map<Integer, String> theaterMap = theaters.stream()
                 .collect(Collectors.toMap(Theater::getId, Theater::getName));
         model.addAttribute("theaterMap", theaterMap);
-        return "/admin/addScreens";
+        return "admin/addScreens";
     }
 
     @PostMapping("/admin/addScreen")
-    public String addEntry(@RequestParam("name") String name,
-                           @RequestParam("theaterId") int theaterId,
-                           @RequestParam("capacity") int capacity,
-                           Model model) {
-        Screens screens = new Screens();
-        screens.setName(name);
-        screens.setRoomId(theaterId);
-        screens.setCapacity(capacity);
-        screenDao.save(screens);
+    public String addScreen(@RequestParam("name") String name,
+                            @RequestParam("theaterId") int theaterId,
+                            @RequestParam("capacity") int capacity,
+                            Model model) {
+        Screens screen = new Screens();
+        screen.setName(name);
+        screen.setRoomId(theaterId);
+        screen.setCapacity(capacity);
+        screenDao.save(screen);
         model.addAttribute("message", "Screen added successfully!");
         return "redirect:/admin";
     }
+
     @GetMapping("/admin/showScreens")
     public String screens(Model model) {
         List<Screens> screens = screenService.getAll();
@@ -175,13 +176,43 @@ public class AdminController {
                 .collect(Collectors.toMap(Theater::getId, Theater::getName));
         model.addAttribute("screens", screens);
         model.addAttribute("theaterMap", theaterMap);
-        return "/admin/showScreens";
+        return "admin/showScreens";
     }
 
     @GetMapping("/admin/showTheaters")
     public String showTheatersPage(Model model) {
         List<Theater> theatersList = roomService.getAll();
         model.addAttribute("theaters", theatersList);
-        return "/admin/showTheater";
+        return "admin/showTheater";
     }
+
+    @GetMapping("/admin/addShowTime.html")
+    public String showAddShowTimePage(@RequestParam("movieId") int movieId, Model model) {
+        model.addAttribute("movieId", movieId);
+
+        List<Screens> screens = screenDao.getAll();
+        model.addAttribute("screens", screens);
+
+        return "admin/addShowTime";
+    }
+
+    @PostMapping("/admin/addShowTime")
+    public String addShowTime(@RequestParam("movieId") int movieId,
+                              @RequestParam("screenId") int screenId,
+                              @RequestParam("showTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime showTime,
+                              @RequestParam("price") int price) {
+        ShowTime newShowTime = ShowTime.builder()
+                .movieId(movieId)
+                .screenId(screenId)
+                .showTime(Timestamp.valueOf(showTime))
+                .price(price)
+                .build();
+        showTimeService.save(newShowTime);
+        return "redirect:/admin/moviesDetails.html?id=" + movieId;
+    }
+
+
 }
+
+
+

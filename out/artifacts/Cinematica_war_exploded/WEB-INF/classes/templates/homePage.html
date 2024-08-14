@@ -45,19 +45,17 @@
     </div>
 </section>
 
-<section class="featured-movies">
-    <div class="container">
-        <h1>Available Movies</h1>
-        <div class="movies-grid">
-            <div th:each="movie : ${movies}" class="movie-card">
-                <a th:href="@{/movies/details/{id}(id=${movie.id})}">
-                    <img th:src="@{/static/img/{poster}(poster=${movie.posterImage})}" th:alt="${movie.title}" />
-                    <span th:text="${movie.title}">Movie Title</span>
-                </a>
-            </div>
+<div class="container">
+    <h1>Available Movies</h1>
+    <div class="movies-grid">
+        <div th:each="movie : ${movies}" class="movie-card">
+            <a th:href="@{/movies/details/{id}(id=${movie.id})}">
+                <img th:src="@{/static/img/{filename}(filename=${movie.posterImage})}" th:alt="${movie.title}" />
+                <span th:text="${movie.title}">Movie Title</span>
+            </a>
         </div>
     </div>
-</section>
+</div>
 
 <footer class="footer">
     <div class="container">

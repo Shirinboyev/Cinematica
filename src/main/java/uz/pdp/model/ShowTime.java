@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -16,4 +17,5 @@ public class ShowTime {
     private int screenId;
     private int movieId;
     private Timestamp showTime;
+    private int price;
 }

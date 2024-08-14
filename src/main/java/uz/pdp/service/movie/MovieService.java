@@ -31,16 +31,7 @@ public class MovieService implements BaseService<Movie> {
 
     private final Path rootPath = Path.of("C:\\Users\\gayra\\OneDrive\\Desktop\\file\\Cinematica\\src\\main\\resources\\static\\img");
 
-/*    public void addMovie( MultipartFile posterFile) throws IOException {
-        String originalFilename = posterFile.getOriginalFilename();
-        String mimeType = StringUtils.getFilenameExtension(originalFilename);
-        String generatedFileName = UUID.randomUUID() + "." + mimeType;
-        String extension = "/static/img/" + generatedFileName;
-        Files.copy(posterFile.getInputStream(),rootPath.resolve(generatedFileName), StandardCopyOption.REPLACE_EXISTING);
-        Movie movie = new Movie();
-        movie.setTitle(originalFilename);
 
-    }*/
 public void addMovie(Movie movie, MultipartFile posterFile) throws IOException {
     String originalFilename = posterFile.getOriginalFilename();
 
@@ -48,29 +39,19 @@ public void addMovie(Movie movie, MultipartFile posterFile) throws IOException {
         throw new IllegalArgumentException("File name is invalid");
     }
 
-    // Get the file extension
     String extension = StringUtils.getFilenameExtension(originalFilename);
     if (extension == null) {
         throw new IllegalArgumentException("File extension is invalid");
     }
-
-    // Generate a unique filename
     String generatedFileName = UUID.randomUUID() + "." + extension;
-
-    // Define the path where the file will be saved
     Path destinationPath = rootPath.resolve(generatedFileName);
-
-    // Ensure the directory exists
     Files.createDirectories(rootPath);
-
-    // Copy the file to the target location
     try (InputStream inputStream = posterFile.getInputStream()) {
         Files.copy(inputStream, destinationPath, StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
         throw new IOException("Failed to save the file", e);
     }
 
-    // Save only the filename in the database
     movie.setPosterImage(generatedFileName);
     movieDao.save(movie);
 }

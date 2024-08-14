@@ -79,4 +79,9 @@ public class ScreenDao implements BaseDao<Screens> {
             return screen;
         });
     }
+    public List<Screens> findByRoomId(int roomId) {
+        String sql = "SELECT id, name FROM screens WHERE room_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, roomId);
+    }
+
 }

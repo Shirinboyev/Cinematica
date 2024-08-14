@@ -75,7 +75,21 @@
         .container img:hover {
             transform: scale(1.03);
         }
-
+        .create-show-button {
+            background-color: #28a745;
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 14px;
+            display: inline-block;
+            transition: background-color 0.3s, transform 0.2s;
+            text-align: center;
+            text-decoration: none;
+        }
+        .create-show-button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -84,7 +98,6 @@
                 opacity: 1;
             }
         }
-
         @keyframes slideIn {
             from {
                 transform: translateY(-20px);
@@ -95,7 +108,6 @@
                 opacity: 1;
             }
         }
-
         @keyframes backgroundChange {
             from {
                 background-color: #e9ecef;
@@ -118,21 +130,26 @@
             <th>Release Date</th>
             <th>Duration (minutes)</th>
             <th>Trailer</th>
+            <th>Create Show</th>
         </tr>
         </thead>
         <tbody>
-            <tr th:each="movie : ${movies}">
-                <td th:text="${movie.title}">Title</td>
-                <td th:text="${movie.categoryName}">Category</td>
-                <td>
-                    <a th:href="@{/admin/moviesDetails.html(id=${movie.id})}">Description</a>
-                </td>
-                <td th:text="${movie.releaseDate}">Release Date</td>
-                <td th:text="${movie.duration}">Duration</td>
-                <td>
-                    <a th:href="${movie.trailer_url}" target="_blank">Watch Trailer</a>
-                </td>
-            </tr>
+        <tr th:each="movie : ${movies}">
+            <td th:text="${movie.title}">Title</td>
+            <td th:text="${movie.categoryName}">Category</td>
+            <td>
+                <a th:href="@{/admin/moviesDetails.html(id=${movie.id})}">Description</a>
+            </td>
+            <td th:text="${movie.releaseDate}">Release Date</td>
+            <td th:text="${movie.duration}">Duration</td>
+            <td>
+                <a th:href="${movie.trailer_url}" target="_blank">Watch Trailer</a>
+            </td>
+            <td>
+                <a th:href="@{/admin/addShowTime.html(movieId=${movie.id})}" class="create-show-button">Create Show</a>
+            </td>
+
+        </tr>
         </tbody>
     </table>
 </div>
