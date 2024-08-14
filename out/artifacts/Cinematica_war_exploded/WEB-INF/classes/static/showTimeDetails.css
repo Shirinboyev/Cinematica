@@ -1,54 +1,123 @@
-.container {
-    margin-top: 50px;
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    position: relative;
 }
 
-.showtime-detail {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.background-blur {
+    background: url('/static') no-repeat center center fixed;
+    background-size: cover;
+    filter: blur(8px); /* Blur effect on the background image */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Place the background behind all content */
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.container {
+    margin-top: 60px;
+    z-index: 1; /* Ensures content is above the background */
+}
+
+.showtime-detail h1 {
+    font-size: 3rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.showtime-detail p {
+    font-size: 1.3rem;
+    color: #bbbbbb;
+    margin-bottom: 15px;
+}
+
+.seats-container {
+    margin-top: 40px;
 }
 
 .seats-grid {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 10px;
-    margin: 20px 0;
+    grid-template-columns: repeat(10, 1fr); /* Adjust this number to control the number of seats per row */
+    gap: 15px; /* Increased gap for better spacing */
+    margin-bottom: 30px;
+    justify-content: center; /* Center the grid horizontally */
 }
 
 .seat {
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
+    width: 45px;
+    height: 45px;
+    background-color: #333333;
+    color: #ffffff;
+    text-align: center;
+    line-height: 45px;
     border-radius: 5px;
     cursor: pointer;
-    text-align: center;
-    padding: 10px;
-    font-weight: bold;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s;
 }
 
 .seat:hover {
-    background-color: #d9d9d9;
+    background-color: #555555;
+    transform: scale(1.1);
 }
 
 .seat.selected {
-    background-color: #28a745;
-    color: #fff;
+    background-color: #03dac6;
+    transform: scale(1.1);
+}
+
+.seat.booked {
+    background-color: #b00020;
+    cursor: not-allowed;
+}
+
+.seat-info h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+}
+
+.card-info label {
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+.card-info input {
+    background-color: #333333;
+    border: none;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .submit-btn {
-    margin-top: 20px;
-    background-color: #007bff;
-    color: white;
+    background-color: #6200ea;
+    color: #ffffff;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border-radius: 5px;
-    font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .submit-btn:hover {
-    background-color: #0056b3;
+    background-color: #3700b3;
 }

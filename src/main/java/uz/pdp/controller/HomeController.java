@@ -69,11 +69,15 @@ public class HomeController {
             model.addAttribute("movie", movie);
             Screens screen = screenService.getById(showTime.getScreenId());
             model.addAttribute("screen", screen);
+            List<Integer> bookedSeats = ticketService.getBookedSeats(showTime.getId());
+            model.addAttribute("bookedSeats", bookedSeats);
+
             return "showTimeDetails";
         }
         model.addAttribute("errorMessage", "Showtime not found.");
         return "error";
     }
+
 
     @PostMapping("/buy-ticket")
     public String buyTicket(@RequestParam("seats") String seats,
@@ -84,12 +88,14 @@ public class HomeController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         AuthUser user = userService.getByUsername(userDetails.getUsername()).orElse(null);
         ShowTime showTime = showTimeService.getById(showtimeId);
-        model.addAttribute("showTimeId", showTime.getId());
 
         if (showTime == null || user == null) {
             model.addAttribute("errorMessage", "ShowTime or User not found.");
             return "errorPage";
         }
+
+        List<Integer> bookedSeats = ticketService.getBookedSeats(showTime.getId());
+        model.addAttribute("bookedSeats", bookedSeats);
 
         String[] seatNumbers = seats.split(",");
         if (seatNumbers.length == 0) {
@@ -126,6 +132,8 @@ public class HomeController {
         model.addAttribute("totalPrice", totalPrice);
         return "buyTicket";
     }
+
+
 
 
     private void addUserInfoToModel(Model model) {
