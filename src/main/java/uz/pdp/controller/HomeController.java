@@ -16,6 +16,8 @@ import uz.pdp.service.user.UserService;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -87,6 +89,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         AuthUser user = userService.getByUsername(userDetails.getUsername()).orElse(null);
+
         ShowTime showTime = showTimeService.getById(showtimeId);
 
         if (showTime == null || user == null) {
@@ -104,7 +107,6 @@ public class HomeController {
         }
 
         double pricePerSeat = totalPrice / seatNumbers.length;
-
         for (String seatNumber : seatNumbers) {
             try {
                 int seatNo = Integer.parseInt(seatNumber.trim());
@@ -116,9 +118,7 @@ public class HomeController {
                         .price(pricePerSeat)
                         .seatNumber(seatNo)
                         .build();
-
                 ticketService.save(ticket);
-
             } catch (NumberFormatException e) {
                 model.addAttribute("errorMessage", "Invalid seat number format: " + seatNumber);
                 return "errorPage";
@@ -128,10 +128,22 @@ public class HomeController {
             }
         }
 
-        model.addAttribute("seatNumbers", seatNumbers);
-        model.addAttribute("totalPrice", totalPrice);
+        String movieName = movieService.getMovieNameById(showTime.getMovieId()).orElse("Unknown Movie");
+        String cinemaName = screenService.getCinemaNameByScreenId(showTime.getScreenId()).orElse("Unknown Cinema");
+
+        model.addAttribute("fullname", user.getFullName());
+        model.addAttribute("movieName", movieName);
+        model.addAttribute("cinemaName", cinemaName);
+        model.addAttribute("seats", seats);
+        model.addAttribute("currentTime", showTime.getShowTime());
+        model.addAttribute("price", totalPrice);
+
         return "buyTicket";
     }
+
+
+
+
 
 
 
@@ -149,7 +161,18 @@ public class HomeController {
     }
 
     private void addMoviesToModel(Model model) {
-        List<Movie> movies = movieService.getAll();
-        model.addAttribute("movies", movies);
+        List<Movie> allMovies = movieService.getAll();
+
+        List<Movie> availableMovies = allMovies.stream()
+                .filter(movie -> showTimeService.existsByMovieId(movie.getId()))
+                .toList();
+
+        List<Movie> unavailableMovies = allMovies.stream()
+                .filter(movie -> !showTimeService.existsByMovieId(movie.getId()))
+                .toList();
+
+        model.addAttribute("availableMovies", availableMovies);
+        model.addAttribute("unavailableMovies", unavailableMovies);
     }
+
 }

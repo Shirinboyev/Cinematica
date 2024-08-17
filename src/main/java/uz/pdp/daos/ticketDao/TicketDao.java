@@ -6,8 +6,13 @@ import org.springframework.stereotype.Component;
 import uz.pdp.daos.BaseDao;
 import uz.pdp.model.Tickets;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class TicketDao implements BaseDao<Tickets> {
@@ -68,4 +73,30 @@ public class TicketDao implements BaseDao<Tickets> {
         String sql = "SELECT seat_number FROM tickets WHERE showtime_id = ?";
         return jdbcTemplate.queryForList(sql, new Object[]{showTimeId}, Integer.class);
     }
+
+    public List<Tickets> findByUserId(int userId) {
+        String sql = "SELECT * FROM tickets WHERE user_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, userId);
+    }
+
+
+    public Map<String, Object> getTicketDetails(int showtimeId) {
+        String sql = """
+        SELECT 
+            m.name AS movie_name, 
+            r.name AS cinema_name
+        FROM 
+            showtime st
+        INNER JOIN 
+            movies m ON st.movie_id = m.id
+        INNER JOIN 
+            screens s ON st.screen_id = s.id
+        INNER JOIN 
+            rooms r ON s.room_id = r.id
+        WHERE 
+            st.id = ?
+        """;
+        return jdbcTemplate.queryForMap(sql, showtimeId);
+    }
+
 }

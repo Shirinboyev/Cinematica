@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import uz.pdp.daos.BaseDao;
 import uz.pdp.model.ShowTime;
+import uz.pdp.model.ShowTimeDetails;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,6 +30,22 @@ public class ShowTimeDao implements BaseDao<ShowTime> {
                     .showTime(rs.getTimestamp("show_time"))
                     .price(rs.getInt("price"))
                     .build();
+        }
+    };
+    private final RowMapper<ShowTimeDetails> showTimeDetailsRowMapper = new RowMapper<>() {
+        @Override
+        public ShowTimeDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new ShowTimeDetails(
+                    ShowTime.builder()
+                            .id(rs.getInt("id"))
+                            .screenId(rs.getInt("screen_id"))
+                            .movieId(rs.getInt("movie_id"))
+                            .showTime(rs.getTimestamp("show_time"))
+                            .price(rs.getInt("price"))
+                            .build(),
+                    rs.getString("movie_name"),
+                    rs.getString("cinema_name")
+            );
         }
     };
 
@@ -74,5 +91,19 @@ public class ShowTimeDao implements BaseDao<ShowTime> {
     public List<ShowTime> getShowTimesByMovieId(int movieId) {
         String sql = "SELECT * FROM showtime WHERE movie_id = ?";
         return jdbcTemplate.query(sql, showTimeRowMapper, movieId);
+    }
+    public ShowTimeDetails getShowTimeDetailsById(int showtimeId) {
+        String sql = "SELECT st.id, st.screen_id, st.movie_id, st.show_time, st.price, " +
+                "m.name AS movie_name, sc.name AS cinema_name " +
+                "FROM showtime st " +
+                "INNER JOIN movies m ON st.movie_id = m.id " +
+                "INNER JOIN screens sc ON st.screen_id = sc.id " +
+                "WHERE st.id = ?";
+        return jdbcTemplate.queryForObject(sql, showTimeDetailsRowMapper, showtimeId);
+    }
+    public boolean existsByMovieId(int movieId) {
+        String sql = "SELECT COUNT(*) FROM showtime WHERE movie_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{movieId}, Integer.class);
+        return count != null && count > 0;
     }
 }

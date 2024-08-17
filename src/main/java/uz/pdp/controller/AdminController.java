@@ -2,7 +2,6 @@ package uz.pdp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.pdp.daos.screenDao.ScreenDao;
-import uz.pdp.daos.theaterDao.TheaterDao;
 import uz.pdp.model.*;
 import uz.pdp.service.movie.MovieService;
 import uz.pdp.service.room.RoomService;
 import uz.pdp.service.screen.ScreenService;
 import uz.pdp.service.showTime.ShowTimeService;
+import uz.pdp.service.ticket.TicketService;
 import uz.pdp.service.user.UserService;
 
 
@@ -36,15 +35,17 @@ public class AdminController {
     private final ScreenDao screenDao;
     private final ScreenService screenService;
     private final ShowTimeService showTimeService;
+    private final TicketService ticketService;
 
     @Autowired
-    public AdminController(MovieService movieService, UserService userService, RoomService roomService, ScreenDao screenDao, ScreenService screenService, ShowTimeService showTimeService) {
+    public AdminController(MovieService movieService, UserService userService, RoomService roomService, ScreenDao screenDao, ScreenService screenService, ShowTimeService showTimeService, TicketService ticketService) {
         this.movieService = movieService;
         this.userService = userService;
         this.roomService = roomService;
         this.screenDao = screenDao;
         this.screenService = screenService;
         this.showTimeService = showTimeService;
+        this.ticketService = ticketService;
     }
 
     @GetMapping("/admin/moviesDetails.html")
@@ -61,7 +62,7 @@ public class AdminController {
     @GetMapping("/admin")
     public String adminPage(Model model) {
         model.addAttribute("page", "ADMIN PAGE");
-        return "admin";
+        return "admin/admin";
     }
 
     @GetMapping("/admin/addMovie")
@@ -109,12 +110,16 @@ public class AdminController {
         }
         model.addAttribute("user", user);
 
+        List<Tickets> userTickets = ticketService.getByUserId(user.getId());
+        model.addAttribute("userTickets", userTickets);
+
         if ("ADMIN".equals(user.getRole())) {
             return "admin/profile";
         } else {
             return "userProfile";
         }
     }
+
 
     @GetMapping("/admin/showMovies")
     public String showMoviesPage(Model model) {
@@ -210,7 +215,28 @@ public class AdminController {
         showTimeService.save(newShowTime);
         return "redirect:/admin/moviesDetails.html?id=" + movieId;
     }
+    @GetMapping("/admin/ticket/{ticketId}")
+    public String viewTicketDetails(@PathVariable("ticketId") int ticketId, Model model) {
+        Tickets ticket = ticketService.getById(ticketId);
 
+        if (ticket != null) {
+            ShowTime showTime = showTimeService.getById(ticket.getShowtimeId());
+
+            if (showTime != null) {
+                String movieName = movieService.getMovieNameById(showTime.getMovieId()).orElse("Unknown Movie");
+                String cinemaName = screenService.getCinemaNameByScreenId(showTime.getScreenId()).orElse("Unknown Cinema");
+                AuthUser user = userService.getById(ticket.getUserId());
+
+                model.addAttribute("ticket", ticket);
+                model.addAttribute("fullname", user.getFullName());
+                model.addAttribute("movieName", movieName);
+                model.addAttribute("cinemaName", cinemaName);
+                return "ticketDetails";
+            }
+        }
+
+        return "redirect:/admin/profile";
+    }
 
 }
 

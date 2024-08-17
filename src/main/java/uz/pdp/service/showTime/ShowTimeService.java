@@ -3,6 +3,7 @@ package uz.pdp.service.showTime;
 import org.springframework.stereotype.Component;
 import uz.pdp.daos.showTimeDao.ShowTimeDao;
 import uz.pdp.model.ShowTime;
+import uz.pdp.model.ShowTimeDetails;
 import uz.pdp.service.BaseService;
 
 import java.util.List;
@@ -43,5 +44,8 @@ public class ShowTimeService implements BaseService<ShowTime>{
 
     public List<ShowTime> getShowTimeByMovieId(int movieId) {
         return showTimeDao.getShowTimesByMovieId(movieId);
+    }
+    public boolean existsByMovieId(int movieId) {
+        return showTimeDao.existsByMovieId(movieId);
     }
 }

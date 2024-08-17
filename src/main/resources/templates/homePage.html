@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinematica</title>
-    <link rel="icon" href="/static/img/cinema.ico" type="image/x-icon">
+    <link rel="icon" href="/static/img/interstellar.jpeg" type="image/x-icon">
     <link rel="stylesheet" href="/static/homePage.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -22,11 +22,15 @@
             <ul>
                 <li class="navbar-item"><a href="/movies" class="navbar-link">Movies</a></li>
                 <li class="navbar-item" th:if="${username != null}">
-                    <a th:href="${role == 'ADMIN' ? '/admin' : '/user/profile'}" class="navbar-link">Profile</a>
+                    <a th:href="${role == 'ADMIN' ? '/admin/profile' : '/user/profile'}" class="navbar-link">Profile</a>
+                </li>
+                <li class="navbar-item" th:if="${role == 'ADMIN'}">
+                    <a href="/admin" class="navbar-link">Admin</a>
                 </li>
                 <li class="navbar-item" th:if="${username != null}">
                     <a href="/logout" class="navbar-link">Logout</a>
                 </li>
+
                 <li class="navbar-item" th:if="${username == null}">
                     <a href="/login" class="navbar-link">Login</a>
                 </li>
@@ -45,13 +49,32 @@
     </div>
 </section>
 
-<div class="container">
-    <h1>Available Movies</h1>
+<div class="container movie-container">
+    <h1 class="movies-title">Available Movies</h1>
     <div class="movies-grid">
-        <div th:each="movie : ${movies}" class="movie-card">
+        <div th:each="movie : ${availableMovies}" class="movie-card animate__animated animate__fadeInUp">
             <a th:href="@{/movies/details/{id}(id=${movie.id})}">
-                <img th:src="@{/static/img/{filename}(filename=${movie.posterImage})}" th:alt="${movie.title}" />
-                <span th:text="${movie.title}">Movie Title</span>
+                <div class="movie-img-wrapper">
+                    <img th:src="@{/static/img/{filename}(filename=${movie.posterImage})}" th:alt="${movie.title}" />
+                </div>
+                <div class="movie-info">
+                    <h3 th:text="${movie.title}">Movie Title</h3>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <h1 class="movies-title">Unavailable Movies</h1>
+    <div class="movies-grid">
+        <div th:each="movie : ${unavailableMovies}" class="movie-card unavailable animate__animated animate__fadeInUp">
+            <a th:href="@{/movies/details/{id}(id=${movie.id})}">
+                <div class="movie-img-wrapper">
+                    <img th:src="@{/static/img/{filename}(filename=${movie.posterImage})}" th:alt="${movie.title}" />
+                </div>
+                <div class="movie-info">
+                    <h3 th:text="${movie.title}">Movie Title</h3>
+                    <p class="unavailable-text">Coming Soon</p>
+                </div>
             </a>
         </div>
     </div>

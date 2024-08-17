@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -79,6 +80,10 @@ public void addMovie(Movie movie, MultipartFile posterFile) throws IOException {
     @Override
     public List<Movie> getAll() {
         return movieDao.getAll();
+    }
+
+    public Optional<String> getMovieNameById(int id) {
+        return movieDao.findNameById(id);
     }
 
 }

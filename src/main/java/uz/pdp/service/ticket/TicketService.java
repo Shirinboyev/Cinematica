@@ -6,6 +6,7 @@ import uz.pdp.model.Tickets;
 import uz.pdp.service.BaseService;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class TicketService implements BaseService<Tickets> {
@@ -44,4 +45,11 @@ public class TicketService implements BaseService<Tickets> {
     public List<Integer> getBookedSeats(int id){
         return ticketDao.getBookedSeats(id);
     }
+
+    public List<Tickets> getByUserId(int id){
+        return ticketDao.findByUserId(id);
+    }
+
+
+
 }

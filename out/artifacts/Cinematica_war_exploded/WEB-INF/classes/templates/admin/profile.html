@@ -3,65 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>Admin Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: url('/static/img/backround.jpg') no-repeat center center fixed;
-            background-size: cover;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background: #f0f0f0;
+            color: #333;
         }
 
-        .container {
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
-            border-radius: 8px;
+        .profile-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            max-width: 1000px;
-            width: 100%;
-            margin: 0 auto;
+            max-width: 600px;
+            margin: 50px auto;
+            transition: transform 0.3s ease-in-out;
         }
 
-        .container h1 {
+        .profile-card:hover {
+            transform: scale(1.02);
+        }
+
+        .profile-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
             margin-bottom: 20px;
-            color: #333;
+        }
+
+        .profile-header h1 {
             font-size: 24px;
-            text-align: center;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
 
-        .container table {
+        .profile-header p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+
+        .ticket-table {
             width: 100%;
+            border-spacing: 0;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
 
-        .container table th, .container table td {
-            padding: 12px;
+        .ticket-table thead tr {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .ticket-table thead th {
+            padding: 10px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
         }
 
-        .container table th {
-            background-color: #f4f4f4;
+        .ticket-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .ticket-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .ticket-table tbody td {
+            padding: 10px;
+        }
+
+        .ticket-card {
+            display: block;
             color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .container table tr:hover {
-            background-color: #f1f1f1;
+        .ticket-card:hover {
+            background-color: #f9f9f9;
+            color: #007BFF;
         }
 
-    </style>
+        .ticket-card div {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        [data-aos="zoom-in"] {
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        [data-aos="zoom-in"]:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }    </style>
 </head>
 <body>
 <div class="container">
-    <h1>Profile</h1>
-    <p><strong>Name:</strong> <span th:text="${user.fullName}">Admin Name</span></p>
-    <p><strong>Email:</strong> <span th:text="${user.email}">admin@example.com</span></p>
-    <p><strong>Role:</strong> <span th:text="${user.role}">Administrator</span></p>
+    <div class="profile-card" data-aos="zoom-in">
+        <div class="profile-header">
+            <h1>Admin Profile</h1>
+            <p><strong>Full Name:</strong> <span th:text="${user.fullName}"></span></p>
+            <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+            <p><strong>Role:</strong> <span th:text="${user.role}"></span></p>
+        </div>
+
+        <h2>Tickets</h2>
+        <!-- Include the shared ticket display component here -->
+        <table class="table table-hover" data-aos="zoom-in">
+            <thead>
+            </thead>
+            <tbody>
+            <tr th:each="ticket : ${userTickets}">
+                <td colspan="3">
+                    <a th:href="@{'/admin/ticket/' + ${ticket.id}}" class="ticket-card">
+                        <div><strong>Seat Number:</strong> <span th:text="${ticket.seatNumber}"></span></div>
+                        <div><strong>Time:</strong> <span th:text="${ticket.time}"></span></div>
+                        <div><strong>Price:</strong> <span th:text="${ticket.price}"></span></div>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+    AOS.init();
+</script>
 </body>
 </html>

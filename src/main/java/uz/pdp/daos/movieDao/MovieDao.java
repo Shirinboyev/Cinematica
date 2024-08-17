@@ -1,5 +1,7 @@
 package uz.pdp.daos.movieDao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -9,15 +11,18 @@ import uz.pdp.model.Movie;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class MovieDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
 
-    public MovieDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public MovieDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate, JdbcTemplate jdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     RowMapper<Movie> rowMapper = (rs, rowNum) -> {
@@ -91,5 +96,13 @@ public class MovieDao {
 
     private LocalDate convertToLocalDate(Timestamp timestamp) {
         return timestamp == null ? null : timestamp.toLocalDateTime().toLocalDate();
+    }
+    public Optional<String> findNameById(int movieId) {
+        String sql = "SELECT name FROM movies WHERE id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, String.class, movieId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }

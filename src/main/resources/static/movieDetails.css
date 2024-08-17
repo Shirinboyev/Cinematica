@@ -1,73 +1,97 @@
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f4f4f4;
+    background-color: #1c1c1c;
+    color: #fff;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
-
-.header {
-    background-color: #333;
-    padding: 10px 0;
-    color: #fff;
-}
-
-.header .container {
+.container {
     display: flex;
     justify-content: center;
-}
-
-.header .logo {
-    font-size: 24px;
-    color: #fff;
-    text-decoration: none;
-}
-
-.movie-details {
-    display: flex;
-    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
 }
-
-.movie-details .container {
-    display: flex;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
+.movie-detail {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 900px;
     width: 100%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    animation: fadeInUp 1.5s ease both;
 }
-
-.movie-poster img {
-    width: 300px;
-    height: auto;
-    border-radius: 8px;
-}
-
-.movie-info {
-    padding: 20px;
-    flex: 1;
-}
-
-.movie-info h1 {
-    font-size: 28px;
+.movie-detail h1 {
+    font-size: 36px;
     margin-bottom: 15px;
-}
-
-.movie-info .description {
-    font-size: 18px;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-.movie-info p {
-    font-size: 16px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.footer {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 0;
+    font-weight: 700;
+    color: #FFD700;
     text-align: center;
+}
+.movie-detail p {
+    font-size: 18px;
+    color: #dcdcdc;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+.movie-detail p strong {
+    color: #FFD700;
+}
+.trailer-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 25px;
+    background-color: #FFD700;
+    color: #000;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+.trailer-link:hover {
+    background-color: #e6c200;
+}
+.show-sessions {
+    margin-top: 30px;
+}
+.show-sessions h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #FFD700;
+    text-align: center;
+}
+.show-sessions ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.show-sessions ul li a {
+    padding: 10px 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+.show-sessions ul li a:hover {
+    background-color: #FFD700;
+    color: #000;
+}
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

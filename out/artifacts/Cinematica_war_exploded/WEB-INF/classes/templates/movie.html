@@ -87,11 +87,14 @@
 <div class="container">
     <h1>Available Movies</h1>
     <div class="movies-grid">
-        <div th:each="movie : ${movies}" class="movie-card">
+        <div th:each="movie : ${availableMovies}" class="movie-card animate__animated animate__fadeInUp">
             <a th:href="@{/movies/details/{id}(id=${movie.id})}">
-                <!--/*@thymesVar id="posterImage" type="uz.pdp.model.Movie"*/-->
-                <img th:src="@{/static/img/{filename}(filename=${movie.posterImage})}" th:alt="${movie.title}" />
-                <span th:text="${movie.title}">Movie Title</span>
+                <div class="movie-img-wrapper">
+                    <img th:src="@{/static/img/{filename}(filename=${movie.posterImage})}" th:alt="${movie.title}" />
+                </div>
+                <div class="movie-info">
+                    <h3 th:text="${movie.title}">Movie Title</h3>
+                </div>
             </a>
         </div>
     </div>

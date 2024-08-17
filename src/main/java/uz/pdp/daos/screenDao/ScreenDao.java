@@ -1,6 +1,7 @@
 package uz.pdp.daos.screenDao;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import uz.pdp.model.Screens;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ScreenDao implements BaseDao<Screens> {
@@ -82,6 +84,20 @@ public class ScreenDao implements BaseDao<Screens> {
     public List<Screens> findByRoomId(int roomId) {
         String sql = "SELECT id, name FROM screens WHERE room_id = ?";
         return jdbcTemplate.query(sql, rowMapper, roomId);
+    }
+
+    public Optional<String> findCinemaNameByScreenId(int screenId) {
+        String sql = """
+            SELECT r.name 
+            FROM screens s
+            INNER JOIN rooms r ON s.room_id = r.id
+            WHERE s.id = ?
+        """;
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, String.class, screenId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
 }

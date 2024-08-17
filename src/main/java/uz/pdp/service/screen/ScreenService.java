@@ -5,7 +5,9 @@ import uz.pdp.daos.screenDao.ScreenDao;
 import uz.pdp.model.Screens;
 import uz.pdp.service.BaseService;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ScreenService implements BaseService<Screens> {
@@ -38,5 +40,9 @@ public class ScreenService implements BaseService<Screens> {
     @Override
     public List<Screens> getAll() {
         return screensDto.getAll();
+    }
+
+    public Optional<String> getCinemaNameByScreenId (int screenId) {
+        return screensDto.findCinemaNameByScreenId(screenId);
     }
 }

@@ -96,7 +96,6 @@
             <p th:text="'Total Seats: ' + ${screen.capacity}">Total Seats</p>
             <p th:text="'Theater Name: ' + ${theaterMap[screen.roomId]}">Theater Name</p>
             <form th:action="@{/admin/show/{id}(id=${screen.id})}" method="get">
-                <button type="submit">Add Show</button>
             </form>
         </li>
     </ul>
